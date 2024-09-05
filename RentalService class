@@ -1,0 +1,98 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class RentalService {
+    private ArrayList<Car> cars;
+    private ArrayList<Customer> customers;
+
+    public RentalService() {
+        cars = new ArrayList<>();
+        customers = new ArrayList<>();
+    }
+
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    public void addCustomer(Customer customer) {
+        customers.add(customer);
+    }
+
+    public void listAvailableCars() {
+        System.out.println("Available Cars:");
+        for (Car car : cars) {
+            if (!car.isRented()) {
+                System.out.println(car.getModel() + " - " + car.getRegistrationNumber());
+            }
+        }
+    }
+
+    public void rentCar(String registrationNumber, String customerName) {
+        for (Car car : cars) {
+            if (car.getRegistrationNumber().equals(registrationNumber) && !car.isRented()) {
+                car.rentCar();
+                System.out.println("Car rented successfully to " + customerName);
+                return;
+            }
+        }
+        System.out.println("Car not available for rent.");
+    }
+
+    public void returnCar(String registrationNumber) {
+        for (Car car : cars) {
+            if (car.getRegistrationNumber().equals(registrationNumber) && car.isRented()) {
+                car.returnCar();
+                System.out.println("Car returned successfully.");
+                return;
+            }
+        }
+        System.out.println("Car not found or already returned.");
+    }
+
+    public static void main(String[] args) {
+        RentalService rentalService = new RentalService();
+        Scanner scanner = new Scanner(System.in);
+
+        // Adding some cars
+        rentalService.addCar(new Car("TN01AB1234", "Toyota Corolla"));
+        rentalService.addCar(new Car("TN01CD5678", "Honda Civic"));
+        
+        // Adding a customer
+        rentalService.addCustomer(new Customer("Hariharan", "TN12345678"));
+
+        while (true) {
+            System.out.println("\nCar Rental System:");
+            System.out.println("1. List available cars");
+            System.out.println("2. Rent a car");
+            System.out.println("3. Return a car");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    rentalService.listAvailableCars();
+                    break;
+                case 2:
+                    System.out.print("Enter registration number of the car: ");
+                    String regNumber = scanner.nextLine();
+                    System.out.print("Enter customer name: ");
+                    String customerName = scanner.nextLine();
+                    rentalService.rentCar(regNumber, customerName);
+                    break;
+                case 3:
+                    System.out.print("Enter registration number of the car to return: ");
+                    String returnRegNumber = scanner.nextLine();
+                    rentalService.returnCar(returnRegNumber);
+                    break;
+                case 4:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+}
